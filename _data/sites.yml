@@ -1,0 +1,17 @@
+# Published GitHub Pages sites. Newest first.
+# lang: language of the site's content (en / hr)
+- title: HE Zakučac – UQ regulacija na sučelju
+  year: 2025
+  url: https://admilara.github.io/zakucac-uq/
+  repo: https://github.com/admilara/zakucac-uq
+  lang: hr
+  description: Excitation-system Watch logs and PROCIS records from the pilot tests of voltage and reactive power control at the plant's grid interface.
+  tags: [Končar INEM, PROCIS, Q/U control]
+
+- title: HE Zakučac – crni start i otočni rad
+  year: 2024
+  url: https://admilara.github.io/cs-or/
+  repo: https://github.com/admilara/cs-or
+  lang: hr
+  description: Processing and interactive plots of measurements from black start and island operation tests on units A, D, B and C.
+  tags: [HOPS WAMS, PROCIS, Excitation]

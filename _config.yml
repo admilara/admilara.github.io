@@ -1,0 +1,38 @@
+# Site settings ---------------------------------------------------------------
+title: Lara Buljan
+description: Power systems engineer – published data sites, references and a few things from outside work.
+lang: en
+url: "https://admilara.github.io"
+baseurl: ""
+
+# Profile column ---------------------------------------------------------------
+role: Power systems engineer
+# DRAFT – rewrite in your own words (2–3 sentences).
+about: >-
+  I work on voltage stability, dynamic simulation and power system restoration.
+  This page collects the data-processing sites I've published, the references I keep
+  coming back to, and a few things from outside work.
+# Leave a value empty ("") to hide that button.
+contacts:
+  github: "https://github.com/admilara"
+  email: ""
+  linkedin: ""
+# Optional portrait for the top of the profile column, e.g. /assets/img/portrait.jpg
+# (square, ~400×400 px). Empty = initials badge.
+portrait: ""
+
+# Off the clock ----------------------------------------------------------------
+# Paste the normal Spotify share link (Share → Copy song link). The player only loads
+# when a visitor clicks play, so no Spotify cookies are set before that.
+on_repeat:
+  spotify: ""
+  title: "Song title"
+  artist: "The High Kings"
+
+# CV ---------------------------------------------------------------------------
+# Path to a PDF (e.g. /assets/cv/lara-buljan-cv.pdf). Empty = the CV section is hidden.
+cv_pdf: ""
+
+exclude:
+  - README.md
+  - LICENSE

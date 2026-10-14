@@ -1,0 +1,14 @@
+# Your photos. Put the files in assets/img/gallery/ (about 1400 px wide, under ~300 KB each)
+# and list them here. The first one is also used as the banner of "Off the clock".
+- file: photo-1.jpg
+  caption: Placeholder 1
+- file: photo-2.jpg
+  caption: Placeholder 2
+- file: photo-3.jpg
+  caption: Placeholder 3
+- file: photo-4.jpg
+  caption: Placeholder 4
+- file: photo-5.jpg
+  caption: Placeholder 5
+- file: photo-6.jpg
+  caption: Placeholder 6

@@ -1,0 +1,37 @@
+# Study and work references.
+# lang: language of the source (en / hr) – used by the language filter.
+# title_alt: optional title in the other language, shown under the original.
+# topic: used by the topic filter (keep the same spelling across entries).
+- authors: Kundur, P.
+  year: 1994
+  title: Power System Stability and Control
+  venue: McGraw-Hill
+  topic: Stability
+  lang: en
+
+- authors: IEEE/CIGRE Joint Task Force on Stability Terms and Definitions
+  year: 2004
+  title: Definition and classification of power system stability
+  venue: IEEE Transactions on Power Systems, 19, 1387–1401
+  topic: Stability
+  lang: en
+
+- authors: European Commission
+  year: 2016
+  title: Commission Regulation (EU) 2016/631 – Network code on requirements for grid connection of generators (NC RfG)
+  topic: Grid codes
+  lang: en
+
+- authors: European Commission
+  year: 2017
+  title: Commission Regulation (EU) 2017/2196 – Network code on electricity emergency and restoration (NC ER)
+  topic: Restoration
+  lang: en
+
+- authors: HOPS
+  year: 2017
+  title: Mrežna pravila prijenosnog sustava
+  title_alt: Transmission system grid code
+  venue: Narodne novine 67/2017
+  topic: Grid codes
+  lang: hr

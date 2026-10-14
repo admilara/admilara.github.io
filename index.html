@@ -1,0 +1,165 @@
+---
+layout: default
+---
+{%- assign name_parts = site.title | split: " " -%}
+{%- assign has_articles = site.data.articles | size -%}
+{%- assign topics = site.data.references | map: "topic" | uniq | sort -%}
+<div class="wrap">
+
+  <!-- ===================== Profile column ===================== -->
+  <aside class="profile">
+    <div class="profile-top">
+      {%- if site.portrait != "" -%}
+        <img class="avatar" src="{{ site.portrait | relative_url }}" alt="{{ site.title }}" width="88" height="88">
+      {%- else -%}
+        <div class="avatar avatar-initials" aria-hidden="true">{% for p in name_parts %}{{ p | slice: 0 }}{% endfor %}</div>
+      {%- endif -%}
+      <div class="mono-tag">admilara.github.io</div>
+      <h1>{{ site.title }}</h1>
+      <div class="role">{{ site.role }}</div>
+      <p class="about">{{ site.about }}</p>
+    </div>
+
+    <nav class="toc" aria-label="Sections">
+      <a href="#sites">Published sites <span class="n">{{ site.data.sites | size | prepend: "0" | slice: -2, 2 }}</span></a>
+      {%- if has_articles > 0 %}<a href="#writing">Writing <span class="n">{{ site.data.articles | size | prepend: "0" | slice: -2, 2 }}</span></a>{% endif %}
+      <a href="#references">References <span class="n">{{ site.data.references | size | prepend: "0" | slice: -2, 2 }}</span></a>
+      <a href="#offclock">Off the clock <span class="n">♪</span></a>
+      {%- if site.cv_pdf != "" %}<a href="#cv">CV <span class="n">pdf</span></a>{% endif %}
+    </nav>
+
+    <div class="contacts">
+      {%- if site.contacts.github != "" %}<a href="{{ site.contacts.github }}" rel="me">GitHub</a>{% endif -%}
+      {%- if site.contacts.email != "" %}<a href="mailto:{{ site.contacts.email }}">Email</a>{% endif -%}
+      {%- if site.contacts.linkedin != "" %}<a href="{{ site.contacts.linkedin }}" rel="me">LinkedIn</a>{% endif -%}
+    </div>
+
+    <!-- Signature: a quiet 50 Hz trace -->
+    <div class="wave" aria-hidden="true">
+      <svg viewBox="0 0 600 60" preserveAspectRatio="none">
+        <path class="w1" d="M0 30 Q 25 4 50 30 T 100 30 T 150 30 T 200 30 T 250 30 T 300 30 T 350 30 T 400 30 T 450 30 T 500 30 T 550 30 T 600 30 T 650 30 T 700 30"/>
+        <path class="w2" d="M0 30 Q 25 14 50 30 T 100 30 T 150 30 T 200 30 T 250 30 T 300 30 T 350 30 T 400 30 T 450 30 T 500 30 T 550 30 T 600 30 T 650 30 T 700 30"/>
+      </svg>
+      <span>50 Hz</span>
+    </div>
+  </aside>
+
+  <!-- ===================== Main column ===================== -->
+  <main>
+
+    <!-- Published sites -->
+    <section id="sites">
+      <div class="sec-head"><h2>Published sites</h2><span class="hint">GitHub Pages · data processing &amp; visualisation</span></div>
+      {%- for s in site.data.sites %}
+      <article class="site">
+        <div class="yr">{{ s.year }}</div>
+        <div>
+          <h3><a href="{{ s.url }}">{{ s.title }}</a></h3>
+          <p>{{ s.description }}</p>
+          <div class="tags">{% for t in s.tags %}<span class="tag">{{ t }}</span>{% endfor %}<span class="tag tag-lang">{{ s.lang | upcase }}</span></div>
+        </div>
+        <div class="links"><a href="{{ s.url }}">Open site ↗</a>{% if s.repo %}<a class="muted" href="{{ s.repo }}">Repository</a>{% endif %}</div>
+      </article>
+      {%- endfor %}
+    </section>
+
+    <!-- Writing -->
+    {%- if has_articles > 0 %}
+    <section id="writing" data-filter-group>
+      <div class="sec-head"><h2>Writing</h2><span class="hint">Articles and papers</span></div>
+      <div class="chips" role="group" aria-label="Language">
+        <button class="chip on" data-lang="all">All</button><button class="chip" data-lang="en">English</button><button class="chip" data-lang="hr">Hrvatski</button>
+      </div>
+      <div class="list">
+        {%- for a in site.data.articles %}
+        <div class="row" data-lang="{{ a.lang }}">
+          <div class="row-main">
+            {%- if a.url != "" %}<a class="row-title" href="{{ a.url }}">{{ a.title }}</a>{% else %}<span class="row-title">{{ a.title }}</span>{% endif %}
+            <div class="row-meta">{{ a.venue }} · {{ a.date | date: "%b %Y" }}</div>
+          </div>
+          <span class="badge">{{ a.lang | upcase }}</span>
+        </div>
+        {%- endfor %}
+        <div class="empty" hidden>Nothing in this language yet.</div>
+      </div>
+    </section>
+    {%- endif %}
+
+    <!-- References -->
+    <section id="references" data-filter-group>
+      <div class="sec-head"><h2>References</h2><span class="hint">Study and work references</span></div>
+      <div class="filters">
+        <div class="chips" role="group" aria-label="Topic">
+          <button class="chip on" data-topic="all">All topics</button>
+          {%- for t in topics %}<button class="chip" data-topic="{{ t | slugify }}">{{ t }}</button>{% endfor %}
+        </div>
+        <div class="chips chips-lang" role="group" aria-label="Language">
+          <button class="chip on" data-lang="all">All</button><button class="chip" data-lang="en">EN</button><button class="chip" data-lang="hr">HR</button>
+        </div>
+      </div>
+      <div class="list">
+        {%- for r in site.data.references %}
+        <div class="row ref" data-topic="{{ r.topic | slugify }}" data-lang="{{ r.lang }}">
+          <div class="row-main">
+            <div class="cit"><b>{{ r.authors }}</b> ({{ r.year }}). {% if r.url %}<a href="{{ r.url }}"><i>{{ r.title }}</i></a>{% else %}<i>{{ r.title }}</i>{% endif %}{% if r.venue %}. {{ r.venue }}{% endif %}.</div>
+            {%- if r.title_alt %}<div class="alt">{{ r.title_alt }}</div>{% endif %}
+          </div>
+          <div class="ref-tags"><span class="topic">{{ r.topic }}</span><span class="badge">{{ r.lang | upcase }}</span></div>
+        </div>
+        {%- endfor %}
+        <div class="empty" hidden>No references match these filters.</div>
+      </div>
+    </section>
+
+    <!-- Off the clock -->
+    <section id="offclock">
+      <div class="sec-head"><h2>Off the clock</h2></div>
+
+      <div class="offclock-grid">
+        <div class="now">
+          <div class="label">Now</div>
+          <dl>
+            {%- for n in site.data.now %}
+            <div><dt>{{ n.label }}</dt><dd>{{ n.items | join: " · " }}</dd></div>
+            {%- endfor %}
+          </dl>
+        </div>
+
+        <div class="repeat" data-spotify="{{ site.on_repeat.spotify }}">
+          <div class="label">On repeat</div>
+          <button class="play-card" type="button" {% if site.on_repeat.spotify == "" %}disabled{% endif %}>
+            <span class="play-icon" aria-hidden="true">▶</span>
+            <span class="play-text"><strong>{{ site.on_repeat.title }}</strong><span>{{ site.on_repeat.artist }}</span></span>
+          </button>
+          <p class="fine">{% if site.on_repeat.spotify == "" %}Add a Spotify link in <code>_config.yml</code>.{% else %}Loads Spotify's player (and its cookies) only when you press play.{% endif %}</p>
+        </div>
+      </div>
+
+      <div class="gallery">
+        {%- for g in site.data.gallery %}
+        <button class="shot" type="button" data-index="{{ forloop.index0 }}" data-full="{{ '/assets/img/gallery/' | append: g.file | relative_url }}" data-caption="{{ g.caption | escape }}">
+          <img src="{{ '/assets/img/gallery/' | append: g.file | relative_url }}" alt="{{ g.caption | escape }}" loading="lazy" width="1400" height="934">
+        </button>
+        {%- endfor %}
+      </div>
+    </section>
+
+    <!-- CV -->
+    {%- if site.cv_pdf != "" %}
+    <section id="cv">
+      <div class="sec-head"><h2>CV</h2></div>
+      <a class="cv-link" href="{{ site.cv_pdf | relative_url }}">Download CV (PDF) ↓</a>
+    </section>
+    {%- endif %}
+
+    <footer>© {{ site.time | date: "%Y" }} {{ site.title }} · Built with Jekyll on GitHub Pages · No trackers</footer>
+  </main>
+</div>
+
+<!-- Gallery viewer -->
+<dialog class="viewer" aria-label="Photo viewer">
+  <button class="v-close" type="button" aria-label="Close">×</button>
+  <button class="v-prev" type="button" aria-label="Previous photo">‹</button>
+  <figure><img alt=""><figcaption></figcaption></figure>
+  <button class="v-next" type="button" aria-label="Next photo">›</button>
+</dialog>

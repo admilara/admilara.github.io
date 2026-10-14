@@ -1,0 +1,12 @@
+# Articles, papers and posts – yours or ones you contributed to. Newest first.
+# Delete the two examples below and add your own. With no entries the section is hidden.
+- title: "Example article in English – replace me"
+  date: 2026-01-15
+  venue: Conference or journal name
+  url: ""
+  lang: en
+- title: "Primjer članka na hrvatskom – zamijeniti"
+  date: 2025-11-20
+  venue: Naziv skupa ili časopisa
+  url: ""
+  lang: hr

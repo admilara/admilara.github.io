@@ -1,0 +1,36 @@
+---
+layout: default
+title: Not found
+permalink: /404.html
+---
+<main class="notfound">
+  <p class="mono-tag">404</p>
+  <h1>This page isn't here</h1>
+  <p id="moved" hidden>The black start / island operation pages moved to <a href="/cs-or/">/cs-or/</a>. Taking you there…</p>
+  <p id="plain">Try the <a href="/">home page</a>.</p>
+</main>
+<style>
+  .notfound { max-width: 560px; margin: 18vh auto 0; padding: 0 16px; }
+  .notfound .mono-tag { color: var(--ink-3); }
+  .notfound h1 { font-size: 28px; margin: 6px 0 10px; }
+</style>
+<script>
+  // Old cs-or pages used to live at the root of this site (e.g. /cs-hops-wams/).
+  // Forward them to the same path under /cs-or/.
+  (function () {
+    var pages = {{ site.data.old_cs_or.pages | jsonify }};
+    var folders = {{ site.data.old_cs_or.folders | jsonify }};
+    var parts = location.pathname.split("/"), seg = parts[1] || "", target = null;
+    if (pages.indexOf(seg.toLowerCase()) !== -1) {
+      parts[1] = seg.toLowerCase();                 // page addresses on /cs-or/ are lowercase
+      target = "/cs-or" + parts.join("/");
+    } else if (folders.indexOf(seg) !== -1) {
+      target = "/cs-or" + location.pathname;        // plot files: keep the exact file name
+    }
+    if (target) {
+      document.getElementById("moved").hidden = false;
+      document.getElementById("plain").hidden = true;
+      location.replace(target + location.search + location.hash);
+    }
+  })();
+</script>
