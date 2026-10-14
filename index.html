@@ -2,8 +2,10 @@
 layout: default
 ---
 {%- assign name_parts = site.title | split: " " -%}
-{%- assign has_articles = site.data.articles | size -%}
-{%- assign topics = site.data.references | map: "topic" | uniq | sort -%}
+{%- assign work_count = site.data.work | size -%}
+{%- assign work_types = site.data.work | map: "type" | uniq | sort -%}
+{%- assign reading_pro = site.data.reading | where: "category", "professional" | size -%}
+{%- assign reading_per = site.data.reading | where: "category", "personal" | size -%}
 <div class="wrap">
 
   <!-- ===================== Profile column ===================== -->
@@ -22,8 +24,8 @@ layout: default
 
     <nav class="toc" aria-label="Sections">
       <a href="#sites">Published sites <span class="n">{{ site.data.sites | size | prepend: "0" | slice: -2, 2 }}</span></a>
-      {%- if has_articles > 0 %}<a href="#writing">Writing <span class="n">{{ site.data.articles | size | prepend: "0" | slice: -2, 2 }}</span></a>{% endif %}
-      <a href="#references">References <span class="n">{{ site.data.references | size | prepend: "0" | slice: -2, 2 }}</span></a>
+      {%- if work_count > 0 %}<a href="#work">Work &amp; writing <span class="n">{{ work_count | prepend: "0" | slice: -2, 2 }}</span></a>{% endif %}
+      <a href="#reading">Recommended reading <span class="n">{{ site.data.reading | size | prepend: "0" | slice: -2, 2 }}</span></a>
       <a href="#offclock">Off the clock <span class="n">♪</span></a>
       {%- if site.cv_pdf != "" %}<a href="#cv">CV <span class="n">pdf</span></a>{% endif %}
     </nav>
@@ -56,58 +58,66 @@ layout: default
         <div>
           <h3><a href="{{ s.url }}">{{ s.title }}</a></h3>
           <p>{{ s.description }}</p>
-          <div class="tags">{% for t in s.tags %}<span class="tag">{{ t }}</span>{% endfor %}<span class="tag tag-lang">{{ s.lang | upcase }}</span></div>
+          <div class="tags">{% for t in s.tags %}<span class="tag">{{ t }}</span>{% endfor %}<span class="badge">{{ s.lang | upcase }}</span></div>
         </div>
         <div class="links"><a href="{{ s.url }}">Open site ↗</a>{% if s.repo %}<a class="muted" href="{{ s.repo }}">Repository</a>{% endif %}</div>
       </article>
       {%- endfor %}
     </section>
 
-    <!-- Writing -->
-    {%- if has_articles > 0 %}
-    <section id="writing" data-filter-group>
-      <div class="sec-head"><h2>Writing</h2><span class="hint">Articles and papers</span></div>
-      <div class="chips" role="group" aria-label="Language">
-        <button class="chip on" data-lang="all">All</button><button class="chip" data-lang="en">English</button><button class="chip" data-lang="hr">Hrvatski</button>
+    <!-- Work & writing: studies, reports, papers, articles -->
+    {%- if work_count > 0 %}
+    <section id="work" data-filter-group>
+      <div class="sec-head"><h2>Work &amp; writing</h2><span class="hint">Studies, reports, papers and articles</span></div>
+      <div class="filters">
+        <div class="chips" role="group" aria-label="Type">
+          <button class="chip on" data-filter="type" data-value="all">All</button>
+          {%- for t in work_types %}<button class="chip" data-filter="type" data-value="{{ t | slugify }}">{{ t }}</button>{% endfor %}
+        </div>
+        <div class="chips chips-lang" role="group" aria-label="Language">
+          <button class="chip on" data-filter="lang" data-value="all">All</button><button class="chip" data-filter="lang" data-value="en">EN</button><button class="chip" data-filter="lang" data-value="hr">HR</button>
+        </div>
       </div>
       <div class="list">
-        {%- for a in site.data.articles %}
-        <div class="row" data-lang="{{ a.lang }}">
+        {%- for w in site.data.work %}
+        <div class="row" data-type="{{ w.type | slugify }}" data-lang="{{ w.lang }}">
+          <div class="row-yr">{{ w.year }}</div>
           <div class="row-main">
-            {%- if a.url != "" %}<a class="row-title" href="{{ a.url }}">{{ a.title }}</a>{% else %}<span class="row-title">{{ a.title }}</span>{% endif %}
-            <div class="row-meta">{{ a.venue }} · {{ a.date | date: "%b %Y" }}</div>
+            {%- if w.url and w.url != "" %}<a class="row-title" href="{{ w.url }}">{{ w.title }}</a>{% else %}<span class="row-title">{{ w.title }}</span>{% endif %}
+            {%- if w.context and w.context != "" %}<div class="row-meta">{{ w.context }}</div>{% endif %}
           </div>
-          <span class="badge">{{ a.lang | upcase }}</span>
+          <div class="row-tags"><span class="tag">{{ w.type }}</span><span class="badge">{{ w.lang | upcase }}</span></div>
         </div>
         {%- endfor %}
-        <div class="empty" hidden>Nothing in this language yet.</div>
+        <div class="empty" hidden>Nothing matches these filters.</div>
       </div>
     </section>
     {%- endif %}
 
-    <!-- References -->
-    <section id="references" data-filter-group>
-      <div class="sec-head"><h2>References</h2><span class="hint">Study and work references</span></div>
+    <!-- Recommended reading -->
+    <section id="reading" data-filter-group>
+      <div class="sec-head"><h2>Recommended reading</h2><span class="hint">Things that helped me grow – at work and outside it</span></div>
       <div class="filters">
-        <div class="chips" role="group" aria-label="Topic">
-          <button class="chip on" data-topic="all">All topics</button>
-          {%- for t in topics %}<button class="chip" data-topic="{{ t | slugify }}">{{ t }}</button>{% endfor %}
+        <div class="seg" role="group" aria-label="Category">
+          <button class="chip on" data-filter="cat" data-value="professional">Professional <span class="cnt">{{ reading_pro }}</span></button><button class="chip" data-filter="cat" data-value="personal">Personal <span class="cnt">{{ reading_per }}</span></button><button class="chip" data-filter="cat" data-value="all">Both</button>
         </div>
         <div class="chips chips-lang" role="group" aria-label="Language">
-          <button class="chip on" data-lang="all">All</button><button class="chip" data-lang="en">EN</button><button class="chip" data-lang="hr">HR</button>
+          <button class="chip on" data-filter="lang" data-value="all">All</button><button class="chip" data-filter="lang" data-value="en">EN</button><button class="chip" data-filter="lang" data-value="hr">HR</button>
         </div>
       </div>
       <div class="list">
-        {%- for r in site.data.references %}
-        <div class="row ref" data-topic="{{ r.topic | slugify }}" data-lang="{{ r.lang }}">
+        {%- for r in site.data.reading %}
+        <div class="row" data-cat="{{ r.category }}" data-lang="{{ r.lang }}">
           <div class="row-main">
-            <div class="cit"><b>{{ r.authors }}</b> ({{ r.year }}). {% if r.url %}<a href="{{ r.url }}"><i>{{ r.title }}</i></a>{% else %}<i>{{ r.title }}</i>{% endif %}{% if r.venue %}. {{ r.venue }}{% endif %}.</div>
+            {%- assign author_end = r.author | slice: -1 -%}
+            <div class="cit"><b>{{ r.author }}</b>{% if r.year %} ({{ r.year }}).{% elsif author_end != "." %}.{% endif %} {% if r.url %}<a href="{{ r.url }}"><i>{{ r.title }}</i></a>{% else %}<i>{{ r.title }}</i>{% endif %}{% if r.venue %}. {{ r.venue }}{% endif %}.</div>
             {%- if r.title_alt %}<div class="alt">{{ r.title_alt }}</div>{% endif %}
+            {%- if r.note %}<div class="note">{{ r.note }}</div>{% endif %}
           </div>
-          <div class="ref-tags"><span class="topic">{{ r.topic }}</span><span class="badge">{{ r.lang | upcase }}</span></div>
+          <div class="row-tags"><span class="badge">{{ r.lang | upcase }}</span></div>
         </div>
         {%- endfor %}
-        <div class="empty" hidden>No references match these filters.</div>
+        <div class="empty" hidden>Nothing here yet.</div>
       </div>
     </section>
 
@@ -116,7 +126,7 @@ layout: default
       <div class="sec-head"><h2>Off the clock</h2></div>
 
       <div class="offclock-grid">
-        <div class="now">
+        <div class="card now">
           <div class="label">Now</div>
           <dl>
             {%- for n in site.data.now %}
@@ -125,7 +135,7 @@ layout: default
           </dl>
         </div>
 
-        <div class="repeat" data-spotify="{{ site.on_repeat.spotify }}">
+        <div class="card repeat" data-spotify="{{ site.on_repeat.spotify }}">
           <div class="label">On repeat</div>
           <button class="play-card" type="button" {% if site.on_repeat.spotify == "" %}disabled{% endif %}>
             <span class="play-icon" aria-hidden="true">▶</span>
@@ -135,9 +145,10 @@ layout: default
         </div>
       </div>
 
+      <div class="label label-photos">Photos</div>
       <div class="gallery">
         {%- for g in site.data.gallery %}
-        <button class="shot" type="button" data-index="{{ forloop.index0 }}" data-full="{{ '/assets/img/gallery/' | append: g.file | relative_url }}" data-caption="{{ g.caption | escape }}">
+        <button class="shot" type="button" title="{{ g.caption | escape }}" data-full="{{ '/assets/img/gallery/' | append: g.file | relative_url }}" data-caption="{{ g.caption | escape }}">
           <img src="{{ '/assets/img/gallery/' | append: g.file | relative_url }}" alt="{{ g.caption | escape }}" loading="lazy" width="1400" height="934">
         </button>
         {%- endfor %}
@@ -156,7 +167,7 @@ layout: default
   </main>
 </div>
 
-<!-- Gallery viewer -->
+<!-- Photo viewer -->
 <dialog class="viewer" aria-label="Photo viewer">
   <button class="v-close" type="button" aria-label="Close">×</button>
   <button class="v-prev" type="button" aria-label="Previous photo">‹</button>

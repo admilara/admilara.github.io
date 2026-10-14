@@ -4,31 +4,32 @@
 (function () {
   "use strict";
 
-  /* ---- Filters: topic and/or language chips inside a [data-filter-group] section ---- */
+  /* ---- Filters: chips with data-filter="<key>" data-value="<value>" inside a [data-filter-group].
+          Rows carry data-<key> attributes. Without JavaScript every row stays visible. ---- */
   document.querySelectorAll("[data-filter-group]").forEach(function (group) {
-    var state = { topic: "all", lang: "all" };
+    var state = {};
     var rows = group.querySelectorAll(".row");
     var empty = group.querySelector(".empty");
+    group.querySelectorAll(".chip.on[data-filter]").forEach(function (c) { state[c.dataset.filter] = c.dataset.value; });
 
     function apply() {
       var shown = 0;
       rows.forEach(function (row) {
-        var ok = (state.topic === "all" || row.dataset.topic === state.topic) &&
-                 (state.lang === "all" || row.dataset.lang === state.lang);
+        var ok = Object.keys(state).every(function (k) { return state[k] === "all" || row.dataset[k] === state[k]; });
         row.hidden = !ok;
         if (ok) shown++;
       });
       if (empty) empty.hidden = shown > 0;
     }
 
-    group.querySelectorAll(".chip").forEach(function (chip) {
+    group.querySelectorAll(".chip[data-filter]").forEach(function (chip) {
       chip.addEventListener("click", function () {
-        var key = chip.dataset.topic !== undefined ? "topic" : "lang";
-        state[key] = chip.dataset[key];
+        state[chip.dataset.filter] = chip.dataset.value;
         chip.parentElement.querySelectorAll(".chip").forEach(function (c) { c.classList.toggle("on", c === chip); });
         apply();
       });
     });
+    apply();
   });
 
   /* ---- On repeat: Spotify player loads only after a click (no cookies before) ---- */

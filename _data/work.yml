@@ -1,0 +1,18 @@
+# Your own work: studies, reports, papers, articles. Newest first.
+# type: Study / Report / Paper / Article / Talk … (free text; the filter chips are built from it)
+# lang: en / hr        url: optional link (leave out or "" if the work isn't public)
+# context: optional – client, co-authors or the organisation it was done for
+# Replace the two examples below.
+- title: "Example study – replace me"
+  type: Study
+  year: 2025
+  context: "Client or organisation"
+  lang: hr
+  url: ""
+
+- title: "Example article – replace me"
+  type: Article
+  year: 2026
+  context: "Journal or conference name"
+  lang: en
+  url: ""
