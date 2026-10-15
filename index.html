@@ -38,7 +38,7 @@ layout: default
       {%- if site.contacts.linkedin != "" %}<a href="{{ site.contacts.linkedin }}" rel="me">LinkedIn</a>{% endif -%}
     </div>
 
-    <!-- Signature: a quiet 50 Hz trace -->
+    <!-- Signature: a 50 Hz trace -->
     <div class="wave" aria-hidden="true">
       <svg viewBox="0 0 600 60" preserveAspectRatio="none">
         <path class="w1" d="M0 30 Q 25 4 50 30 T 100 30 T 150 30 T 200 30 T 250 30 T 300 30 T 350 30 T 400 30 T 450 30 T 500 30 T 550 30 T 600 30 T 650 30 T 700 30"/>
@@ -120,7 +120,7 @@ layout: default
 
     <!-- Recommended reading -->
     <section id="reading" data-filter-group>
-      <div class="sec-head"><h2>Recommended reading</h2><span class="hint">Things that helped me grow – at work and outside it</span></div>
+      <div class="sec-head"><h2>Recommended reading</h2><span class="hint">All bangers</span></div>
       <div class="filters">
         <div class="seg" role="group" aria-label="Category">
           <button class="chip on" data-filter="cat" data-value="professional">Professional <span class="cnt">{{ reading_pro }}</span></button><button class="chip" data-filter="cat" data-value="personal">Personal <span class="cnt">{{ reading_per }}</span></button><button class="chip" data-filter="cat" data-value="all">Both</button>
@@ -165,7 +165,7 @@ layout: default
             <span class="play-icon" aria-hidden="true">▶</span>
             <span class="play-text"><strong>{{ site.on_repeat.title }}</strong><span>{{ site.on_repeat.artist }}</span></span>
           </button>
-          <p class="fine">{% if site.on_repeat.spotify == "" %}Add a Spotify link in <code>_config.yml</code>.{% else %}Loads Spotify's player (and its cookies) only when you press play.{% endif %}</p>
+          <p class="fine">{% if site.on_repeat.spotify == "" %}{% else %}Loads Spotify's player (and its cookies) only when you press play.{% endif %}</p>
         </div>
       </div>
 

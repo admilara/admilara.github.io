@@ -7,7 +7,6 @@ baseurl: ""
 
 # Profile column ---------------------------------------------------------------
 role: Power systems engineer
-# DRAFT – rewrite in your own words (2–3 sentences).
 about: >-
   I work on voltage stability, dynamic simulation and power system restoration.
   This page collects the data-processing sites I've published, the references I keep
@@ -17,16 +16,16 @@ contacts:
   github: "https://github.com/admilara"
   email: ""
   linkedin: ""
-# Optional portrait for the top of the profile column, e.g. /assets/img/portrait.jpg
+# Portrait for the top of the profile column, e.g. /assets/img/portrait.jpg
 # (square, ~400×400 px). Empty = initials badge.
-portrait: ""
+portrait: "/assets/img/profile.jpg"
 
 # Off the clock ----------------------------------------------------------------
 # Paste the normal Spotify share link (Share → Copy song link). The player only loads
 # when a visitor clicks play, so no Spotify cookies are set before that.
 on_repeat:
-  spotify: ""
-  title: "Song title"
+  spotify: "https://open.spotify.com/track/4OdhXJ8qx91NJLU8C69RG7?si=bxBy2_uoQEe69fsbZ6_7tg&utm_source=copy-link&context=spotify%3Aplaylist%3A37i9dQZF1E8BSedVPdlwoU"
+  title: "The Parting Glass"
   artist: "The High Kings"
 
 # CV ---------------------------------------------------------------------------
