@@ -8,9 +8,11 @@ baseurl: ""
 # Profile column ---------------------------------------------------------------
 role: Power systems engineer
 about: >-
-  I work on voltage stability, dynamic simulation and power system restoration.
-  This page collects the data-processing sites I've published, the references I keep
-  coming back to, and a few things from outside work.
+  I work on grid connection studies, dynamic simulations, voltage stability and power system restoration.
+  This page collects the data-processing sites I've published for easier access to others, the references I keep
+  coming back to, some toolboxes that made my work easier, and a few things from outside work.
+  
+  Currently at Energy Institute Ltd. Zagreb. Taking reading recommendations. 
 # Leave a value empty ("") to hide that button.
 contacts:
   github: "https://github.com/admilara"
