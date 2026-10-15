@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Priprema slika za web</title>
+<style>
+/* Alat: dvostupčani radni prostor – popis slika lijevo, uređivač izreza desno. Sve se obrađuje u pregledniku. */
+:root {
+  --navy: #00386B; --navy-deep: #002647; --steel: #949BA5; --ember: #B85016;
+  --bg: #F2F4F7; --panel: #FFFFFF; --ink: #2B2F36; --muted: #5B6270; --line: #D9DDE3; --ok: #2E7D4F; --warn: #9A5B00;
+  --stage: #1B2430;
+  --font: "Roboto", "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  --font-display: "DIN Alternate", "Bahnschrift", "Roboto Condensed", "Segoe UI", Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #11161D; --panel: #1A212B; --ink: #E3E8EF; --muted: #A3ADBA; --line: #2E3846; --navy: #7FB0E0; --ember: #F0904A; --ok: #6CC08D; --warn: #E6B35C; --stage: #0B0F14; color-scheme: dark; }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font); }
+header { background: #00386B; color: #fff; padding: 18px 24px; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
+header h1 { margin: 0; font: 700 1.5rem/1.2 var(--font-display); }
+header p { margin: 0; color: #C9D6E4; font-size: .9375rem; }
+main { padding: 20px 24px 40px; display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 20px; align-items: start; max-width: 1400px; margin: 0 auto; }
+@media (max-width: 860px) { main { grid-template-columns: 1fr; padding-inline: 16px; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+.side { display: grid; gap: 16px; }
+.block { padding: 16px; }
+.block h2 { margin: 0 0 10px; font: 700 1rem/1.3 var(--font-display); color: var(--navy); }
+label.lbl { display: block; font-size: .8125rem; color: var(--muted); margin: 0 0 4px; }
+select, input[type=text] { width: 100%; font: inherit; padding: 8px 10px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); color: var(--ink); }
+.preset-info { font-size: .8125rem; color: var(--muted); margin-top: 6px; }
+.drop { border: 2px dashed var(--line); border-radius: 4px; padding: 22px 14px; text-align: center; cursor: pointer; color: var(--muted); transition: border-color .15s, background .15s; }
+.drop:hover, .drop.is-over { border-color: var(--navy); background: color-mix(in srgb, var(--navy) 6%, transparent); }
+.drop strong { display: block; color: var(--ink); font-size: 1rem; margin-bottom: 2px; }
+.queue { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; max-height: 46vh; overflow: auto; }
+.queue li button { width: 100%; display: grid; grid-template-columns: 64px 1fr; gap: 10px; align-items: center; text-align: left; padding: 6px; border: 1px solid var(--line); border-radius: 3px; background: var(--panel); color: var(--ink); font: inherit; cursor: pointer; }
+.queue li button[aria-current="true"] { border-color: var(--navy); box-shadow: inset 3px 0 0 var(--ember); }
+.queue img { width: 64px; height: 40px; object-fit: cover; border-radius: 2px; background: var(--line); }
+.queue .qn { font-size: .8125rem; line-height: 1.3; overflow-wrap: anywhere; }
+.queue .qs { display: block; font-size: .75rem; color: var(--muted); }
+.queue .qs.done { color: var(--ok); }
+.queue .qs.small { color: var(--warn); }
+.btn { font: 700 .9375rem/1.2 var(--font-display); padding: 10px 16px; border-radius: 3px; border: 2px solid transparent; cursor: pointer; }
+.btn-primary { background: #B85016; color: #fff; }
+.btn-primary:hover { background: #9C4311; }
+.btn-ghost { background: transparent; border-color: var(--line); color: var(--ink); }
+.btn-ghost:hover { border-color: var(--navy); }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn:focus-visible, select:focus-visible, input:focus-visible, .queue button:focus-visible, .drop:focus-visible { outline: 3px solid var(--ember); outline-offset: 2px; }
+.editor { display: grid; gap: 0; }
+.stage { background: var(--stage); padding: 18px; display: grid; place-items: center; min-height: 320px; border-radius: 4px 4px 0 0; }
+.stage canvas { max-width: 100%; height: auto; cursor: grab; touch-action: none; display: block; }
+.stage canvas.dragging { cursor: grabbing; }
+.empty-stage { color: #9AA5B4; text-align: center; max-width: 30em; }
+.empty-stage b { color: #fff; display: block; font: 700 1.25rem var(--font-display); margin-bottom: 6px; }
+.controls { padding: 14px 16px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 14px 20px; border-top: 1px solid var(--line); }
+@media (max-width: 640px) { .controls { grid-template-columns: 1fr; } }
+.row { display: flex; align-items: center; gap: 10px; }
+.row input[type=range] { flex: 1; accent-color: var(--ember); }
+.val { min-width: 3.5em; text-align: right; font-variant-numeric: tabular-nums; font-size: .875rem; color: var(--muted); }
+.name-row { display: flex; align-items: center; gap: 0; }
+.name-row input { border-radius: 3px 0 0 3px; }
+.name-row span { padding: 8px 10px; border: 1px solid var(--line); border-left: 0; border-radius: 0 3px 3px 0; color: var(--muted); background: var(--bg); }
+.actions { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.status { font-size: .875rem; color: var(--muted); }
+.status.ok { color: var(--ok); }
+.status.warn { color: var(--warn); }
+.snippet { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.snippet code { flex: 1; min-width: 0; overflow-x: auto; white-space: nowrap; padding: 8px 10px; background: var(--bg); border: 1px solid var(--line); border-radius: 3px; font: .8125rem/1.4 ui-monospace, Consolas, monospace; }
+.help { font-size: .8125rem; color: var(--muted); margin: 0; }
+.help li { margin: 2px 0; }
+.help ul { margin: 6px 0 0; padding-left: 1.1em; }
+.notice { margin: 0 0 10px; padding: 10px 12px; border-left: 3px solid var(--warn); background: color-mix(in srgb, var(--warn) 10%, transparent); font-size: .875rem; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Priprema slika za web</h1>
+  <p>Institut za elektroprivredu · izrez, veličina i spremanje u JPG. Slike se obrađuju samo na ovom računalu i nigdje se ne šalju.</p>
+</header>
+
+<main>
+  <div class="side">
+    <section class="panel block" aria-labelledby="h-namjena">
+      <h2 id="h-namjena">1. Namjena slike</h2>
+      <label class="lbl" for="preset">Gdje će se slika prikazivati</label>
+      <select id="preset">
+        <option value="reference">Reference – kartica projekta (16:9)</option>
+        <option value="zanimljivosti">Zanimljivosti – objava (16:10)</option>
+        <option value="galerija">Galerija (4:3)</option>
+        <option value="slobodno">Bez izreza – samo smanji</option>
+      </select>
+      <p class="preset-info" id="preset-info"></p>
+    </section>
+
+    <section class="panel block" aria-labelledby="h-slike">
+      <h2 id="h-slike">2. Slike</h2>
+      <div class="drop" id="drop" tabindex="0" role="button" aria-label="Dodaj slike">
+        <strong>Povucite slike ovamo</strong>ili kliknite za odabir (JPG, PNG, WebP)
+      </div>
+      <input type="file" id="file" accept="image/*" multiple hidden>
+      <ul class="queue" id="queue" style="margin-top:12px"></ul>
+    </section>
+
+    <section class="panel block" aria-labelledby="h-upute">
+      <h2 id="h-upute">Kako radi</h2>
+      <ul class="help">
+        <li>Povucite sliku u pregledu da pomaknete izrez, a klizačem je povećajte.</li>
+        <li>Strelice na tipkovnici pomiču izrez, + i − mijenjaju povećanje.</li>
+        <li>Pri spremanju se uklanjaju skriveni podaci (GPS lokacija, model mobitela).</li>
+        <li>Spremljene slike nalaze se u mapi Preuzimanja; prenesite ih u navedenu mapu na poslužitelju.</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="panel editor" aria-labelledby="h-izrez">
+    <h2 id="h-izrez" class="visually-hidden" style="position:absolute;left:-9999px">3. Izrez i spremanje</h2>
+    <div class="stage" id="stage">
+      <div class="empty-stage" id="empty">
+        <b>Dodajte slike s lijeve strane</b>
+        Pregled izreza pojavit će se ovdje. Možete dodati više slika odjednom i spremiti ih sve jednim klikom.
+      </div>
+      <canvas id="view" width="960" height="540" hidden aria-label="Pregled izreza – povucite za pomicanje"></canvas>
+    </div>
+    <div class="controls">
+      <div>
+        <label class="lbl" for="zoom">Povećanje</label>
+        <div class="row"><input type="range" id="zoom" min="1" max="4" step="0.01" value="1" disabled><span class="val" id="zoom-val">100 %</span></div>
+      </div>
+      <div>
+        <label class="lbl" for="quality">Kvaliteta JPG</label>
+        <div class="row"><input type="range" id="quality" min="0.6" max="0.95" step="0.01" value="0.82"><span class="val" id="q-val">82</span></div>
+      </div>
+      <div style="grid-column:1/-1">
+        <label class="lbl" for="name">Naziv datoteke (mala slova, bez razmaka i hrvatskih slova)</label>
+        <div class="name-row"><input type="text" id="name" disabled spellcheck="false"><span>.jpg</span></div>
+      </div>
+      <div class="snippet">
+        <code id="snippet">slika: "assets/img/reference/naziv.jpg"</code>
+        <button class="btn btn-ghost" id="copy" type="button" disabled>Kopiraj</button>
+      </div>
+      <div class="actions">
+        <button class="btn btn-primary" id="save" type="button" disabled>Spremi ovu sliku</button>
+        <button class="btn btn-ghost" id="save-all" type="button" disabled>Spremi sve</button>
+        <button class="btn btn-ghost" id="center" type="button" disabled>Centriraj</button>
+        <button class="btn btn-ghost" id="remove" type="button" disabled>Ukloni s popisa</button>
+        <span class="status" id="status" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+  var PRESETS = {
+    reference:     { w: 1200, h: 675,  folder: "assets/img/reference/",     field: "slika", info: "1200 × 675 px · mapa assets/img/reference/" },
+    zanimljivosti: { w: 1200, h: 750,  folder: "assets/img/zanimljivosti/", field: "slika", info: "1200 × 750 px · mapa assets/img/zanimljivosti/" },
+    galerija:      { w: 1600, h: 1200, folder: "assets/img/galerija/",      field: "datoteka", info: "1600 × 1200 px · mapa assets/img/galerija/" },
+    slobodno:      { max: 1600,        folder: "assets/img/",               field: "slika", info: "Dulja stranica najviše 1600 px, bez izreza" }
+  };
+  var $ = function (id) { return document.getElementById(id); };
+  var view = $("view"), ctx = view.getContext("2d");
+  var items = [], cur = -1, preset = PRESETS.reference;
+
+  function slug(s) {
+    return s.replace(/\.[^.]+$/, "").toLowerCase()
+      .replace(/đ/g, "d").normalize("NFD").replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 60) || "slika";
+  }
+  function outSize(it) {
+    if (preset.max) {
+      var k = Math.min(1, preset.max / Math.max(it.iw, it.ih));
+      return { w: Math.round(it.iw * k), h: Math.round(it.ih * k) };
+    }
+    return { w: preset.w, h: preset.h };
+  }
+  // dio izvorne slike koji ulazi u izrez
+  function srcRect(it) {
+    var o = outSize(it);
+    if (preset.max) return { x: 0, y: 0, w: it.iw, h: it.ih, o: o };
+    var s = Math.max(o.w / it.iw, o.h / it.ih) * it.zoom;
+    var w = o.w / s, h = o.h / s;
+    it.cx = Math.min(Math.max(it.cx, w / 2), it.iw - w / 2);
+    it.cy = Math.min(Math.max(it.cy, h / 2), it.ih - h / 2);
+    return { x: it.cx - w / 2, y: it.cy - h / 2, w: w, h: h, o: o };
+  }
+  function tooSmall(it) {
+    var r = srcRect(it);
+    return r.w < r.o.w * 0.85 || r.h < r.o.h * 0.85;
+  }
+
+  function draw() {
+    var it = items[cur];
+    if (!it) { view.hidden = true; $("empty").hidden = false; return; }
+    view.hidden = false; $("empty").hidden = true;
+    var r = srcRect(it);
+    var maxW = 960, ratio = r.o.w / r.o.h;
+    view.width = maxW; view.height = Math.round(maxW / ratio);
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(it.img, r.x, r.y, r.w, r.h, 0, 0, view.width, view.height);
+    if (!preset.max) { // pomoćne linije (pravilo trećina)
+      ctx.strokeStyle = "rgba(255,255,255,.35)"; ctx.lineWidth = 1; ctx.beginPath();
+      for (var i = 1; i < 3; i++) {
+        ctx.moveTo(view.width * i / 3, 0); ctx.lineTo(view.width * i / 3, view.height);
+        ctx.moveTo(0, view.height * i / 3); ctx.lineTo(view.width, view.height * i / 3);
+      }
+      ctx.stroke();
+    }
+    $("zoom").disabled = !!preset.max; $("center").disabled = !!preset.max;
+    $("zoom").value = it.zoom; $("zoom-val").textContent = Math.round(it.zoom * 100) + " %";
+    $("name").value = it.name;
+    updateSnippet();
+    var st = $("status");
+    if (tooSmall(it)) { st.className = "status warn"; st.textContent = "Slika je manja od " + r.o.w + " × " + r.o.h + " px – na webu će izgledati mutno."; }
+    else if (it.savedAs) { st.className = "status ok"; st.textContent = "Spremljeno: " + it.savedAs; }
+    else { st.className = "status"; st.textContent = "Izlaz: " + r.o.w + " × " + r.o.h + " px"; }
+  }
+  function updateSnippet() {
+    var it = items[cur]; var n = (it ? it.name : "naziv") + ".jpg";
+    var path = preset.field === "datoteka" ? n : preset.folder + n;
+    $("snippet").textContent = preset.field + ': "' + path + '"';
+  }
+  function renderQueue() {
+    var q = $("queue"); q.innerHTML = "";
+    items.forEach(function (it, i) {
+      var li = document.createElement("li"), b = document.createElement("button");
+      b.type = "button"; b.setAttribute("aria-current", i === cur ? "true" : "false");
+      var st = it.savedAs ? '<span class="qs done">Spremljeno</span>' : tooSmall(it) ? '<span class="qs small">Premala za ovu namjenu</span>' : '<span class="qs">' + it.iw + " × " + it.ih + " px</span>";
+      b.innerHTML = '<img alt="" src="' + it.url + '"><span class="qn">' + it.name.replace(/</g, "&lt;") + ".jpg" + st + "</span>";
+      b.addEventListener("click", function () { cur = i; renderQueue(); draw(); });
+      li.appendChild(b); q.appendChild(li);
+    });
+    var has = items.length > 0;
+    ["save", "save-all", "remove", "copy", "name"].forEach(function (id) { $(id).disabled = !has; });
+    $("save-all").textContent = items.length > 1 ? "Spremi sve (" + items.length + ")" : "Spremi sve";
+  }
+
+  function addFiles(files) {
+    var list = Array.prototype.slice.call(files);
+    var bad = [];
+    var jobs = list.map(function (f) {
+      return new Promise(function (res) {
+        if (/heic|heif/i.test(f.type) || /\.(heic|heif)$/i.test(f.name)) { bad.push(f.name + " (HEIC)"); return res(); }
+        var url = URL.createObjectURL(f), img = new Image();
+        img.onload = function () {
+          items.push({ img: img, url: url, iw: img.naturalWidth, ih: img.naturalHeight, cx: img.naturalWidth / 2, cy: img.naturalHeight / 2, zoom: 1, name: slug(f.name), savedAs: "" });
+          res();
+        };
+        img.onerror = function () { bad.push(f.name); URL.revokeObjectURL(url); res(); };
+        img.src = url;
+      });
+    });
+    Promise.all(jobs).then(function () {
+      if (cur < 0 && items.length) cur = 0;
+      renderQueue(); draw();
+      if (bad.length) {
+        var st = $("status"); st.className = "status warn";
+        st.textContent = "Nije moguće otvoriti: " + bad.join(", ") + ". Spremite ih kao JPG (na iPhoneu: Postavke → Kamera → Formati → Najkompatibilnije).";
+      }
+    });
+  }
+
+  // kvalitetnije smanjivanje u koracima
+  function render(it) {
+    var r = srcRect(it), c = document.createElement("canvas");
+    var sw = r.w, sh = r.h, src = it.img, sx = r.x, sy = r.y;
+    while (sw / 2 > r.o.w) {
+      var t = document.createElement("canvas");
+      t.width = Math.round(sw / 2); t.height = Math.round(sh / 2);
+      var tc = t.getContext("2d"); tc.imageSmoothingQuality = "high";
+      tc.drawImage(src, sx, sy, sw, sh, 0, 0, t.width, t.height);
+      src = t; sx = 0; sy = 0; sw = t.width; sh = t.height;
+    }
+    c.width = r.o.w; c.height = r.o.h;
+    var cc = c.getContext("2d"); cc.imageSmoothingQuality = "high";
+    cc.fillStyle = "#fff"; cc.fillRect(0, 0, c.width, c.height); // PNG s prozirnošću → bijela pozadina
+    cc.drawImage(src, sx, sy, sw, sh, 0, 0, c.width, c.height);
+    return new Promise(function (res) { c.toBlob(res, "image/jpeg", +$("quality").value); });
+  }
+  function save(it) {
+    return render(it).then(function (blob) {
+      var a = document.createElement("a"), n = it.name + ".jpg";
+      a.href = URL.createObjectURL(blob); a.download = n;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 4000);
+      it.savedAs = n + " (" + Math.round(blob.size / 1024) + " kB)";
+      return blob;
+    });
+  }
+
+  // --- događaji
+  $("drop").addEventListener("click", function () { $("file").click(); });
+  $("drop").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); $("file").click(); } });
+  $("file").addEventListener("change", function () { addFiles(this.files); this.value = ""; });
+  ["dragenter", "dragover"].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { e.preventDefault(); $("drop").classList.add("is-over"); });
+  });
+  ["dragleave", "drop"].forEach(function (ev) {
+    document.addEventListener(ev, function (e) { e.preventDefault(); $("drop").classList.remove("is-over"); });
+  });
+  document.addEventListener("drop", function (e) { if (e.dataTransfer && e.dataTransfer.files.length) addFiles(e.dataTransfer.files); });
+  document.addEventListener("paste", function (e) {
+    var f = Array.prototype.filter.call(e.clipboardData.files || [], function (x) { return /^image\//.test(x.type); });
+    if (f.length) addFiles(f);
+  });
+
+  $("preset").addEventListener("change", function () {
+    preset = PRESETS[this.value]; $("preset-info").textContent = preset.info;
+    items.forEach(function (it) { it.savedAs = ""; });
+    renderQueue(); draw(); updateSnippet();
+  });
+  $("zoom").addEventListener("input", function () { var it = items[cur]; if (!it) return; it.zoom = +this.value; it.savedAs = ""; draw(); });
+  $("quality").addEventListener("input", function () { $("q-val").textContent = Math.round(this.value * 100); });
+  $("name").addEventListener("input", function () {
+    var it = items[cur]; if (!it) return;
+    it.name = slug(this.value) || "slika"; updateSnippet();
+  });
+  $("name").addEventListener("change", function () { this.value = items[cur] ? items[cur].name : ""; renderQueue(); });
+  $("center").addEventListener("click", function () { var it = items[cur]; if (!it) return; it.cx = it.iw / 2; it.cy = it.ih / 2; it.zoom = 1; draw(); });
+  $("remove").addEventListener("click", function () {
+    if (cur < 0) return; URL.revokeObjectURL(items[cur].url); items.splice(cur, 1);
+    cur = Math.min(cur, items.length - 1); renderQueue(); draw();
+  });
+  $("save").addEventListener("click", function () { var it = items[cur]; if (it) save(it).then(function () { renderQueue(); draw(); }); });
+  $("save-all").addEventListener("click", function () {
+    var i = 0, btn = this; btn.disabled = true;
+    (function next() {
+      if (i >= items.length) { btn.disabled = false; renderQueue(); draw(); var st = $("status"); st.className = "status ok"; st.textContent = "Spremljeno " + items.length + " slika u mapu Preuzimanja."; return; }
+      save(items[i++]).then(function () { setTimeout(next, 350); });
+    })();
+  });
+  $("copy").addEventListener("click", function () {
+    var t = $("snippet").textContent, st = $("status");
+    var done = function () { st.className = "status ok"; st.textContent = "Kopirano."; };
+    if (navigator.clipboard) navigator.clipboard.writeText(t).then(done, sel); else sel();
+    function sel() { var r = document.createRange(); r.selectNodeContents($("snippet")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); st.textContent = "Označeno – pritisnite Ctrl+C."; }
+  });
+
+  // pomicanje izreza mišem / prstom
+  var drag = null;
+  view.addEventListener("pointerdown", function (e) {
+    var it = items[cur]; if (!it || preset.max) return;
+    drag = { x: e.clientX, y: e.clientY }; view.setPointerCapture(e.pointerId); view.classList.add("dragging");
+  });
+  view.addEventListener("pointermove", function (e) {
+    if (!drag) return; var it = items[cur], r = srcRect(it);
+    var k = r.w / view.getBoundingClientRect().width;
+    it.cx -= (e.clientX - drag.x) * k; it.cy -= (e.clientY - drag.y) * k;
+    drag = { x: e.clientX, y: e.clientY }; it.savedAs = ""; draw();
+  });
+  ["pointerup", "pointercancel"].forEach(function (ev) { view.addEventListener(ev, function () { drag = null; view.classList.remove("dragging"); }); });
+  view.addEventListener("wheel", function (e) {
+    var it = items[cur]; if (!it || preset.max) return; e.preventDefault();
+    it.zoom = Math.min(4, Math.max(1, it.zoom * (e.deltaY < 0 ? 1.06 : 1 / 1.06))); it.savedAs = ""; draw();
+  }, { passive: false });
+  document.addEventListener("keydown", function (e) {
+    var it = items[cur]; if (!it || preset.max || /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    var r = srcRect(it), step = r.w * 0.03;
+    if (e.key === "ArrowLeft") it.cx -= step; else if (e.key === "ArrowRight") it.cx += step;
+    else if (e.key === "ArrowUp") it.cy -= step; else if (e.key === "ArrowDown") it.cy += step;
+    else if (e.key === "+" || e.key === "=") it.zoom = Math.min(4, it.zoom * 1.06);
+    else if (e.key === "-") it.zoom = Math.max(1, it.zoom / 1.06);
+    else return;
+    e.preventDefault(); it.savedAs = ""; draw();
+  });
+
+  $("preset-info").textContent = preset.info;
+  updateSnippet();
+})();
+</script>
+</body>
+</html>
