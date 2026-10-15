@@ -3,8 +3,6 @@
 Personal page of Lara Buljan: published GitHub Pages sites, work and writing, recommended
 reading and a bit of life outside work. Live at <https://admilara.github.io/>.
 
-Plain Jekyll on GitHub Pages: no theme, no plugins, no build step. Push to `main` and GitHub
-rebuilds the site in about a minute.
 
 ## Editing content
 
@@ -16,6 +14,7 @@ Almost everything is data. You rarely need to touch HTML.
 | Song in "On repeat" | `_config.yml` → `on_repeat.spotify` (paste the normal Spotify share link) |
 | CV | `_config.yml` → `cv_pdf` (path to a PDF; empty = section hidden) |
 | Published sites | `_data/sites.yml` |
+| Tools & software – plugins and other published code | `_data/tools.yml` (empty list = section hidden) |
 | Work & writing – your studies, reports, papers, articles | `_data/work.yml` (empty list = section hidden) |
 | Recommended reading – professional and personal | `_data/reading.yml` |
 | "Now" list | `_data/now.yml` |
@@ -55,7 +54,7 @@ at <https://admilara.github.io/cs-or/>. `404.html` forwards the old addresses (f
 
 ```
 _config.yml          site settings and profile
-_data/               sites, work, reading, now, gallery, old cs-or paths
+_data/               sites, tools, work, reading, now, gallery, old cs-or paths
 _layouts/default.html
 index.html           the page
 404.html             not-found page + forwarding of old cs-or addresses

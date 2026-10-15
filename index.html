@@ -3,6 +3,7 @@ layout: default
 ---
 {%- assign name_parts = site.title | split: " " -%}
 {%- assign work_count = site.data.work | size -%}
+{%- assign tools_count = site.data.tools | size -%}
 {%- assign work_types = site.data.work | map: "type" | uniq | sort -%}
 {%- assign reading_pro = site.data.reading | where: "category", "professional" | size -%}
 {%- assign reading_per = site.data.reading | where: "category", "personal" | size -%}
@@ -24,6 +25,7 @@ layout: default
 
     <nav class="toc" aria-label="Sections">
       <a href="#sites">Published sites <span class="n">{{ site.data.sites | size | prepend: "0" | slice: -2, 2 }}</span></a>
+      {%- if tools_count > 0 %}<a href="#tools">Tools &amp; software <span class="n">{{ tools_count | prepend: "0" | slice: -2, 2 }}</span></a>{% endif %}
       {%- if work_count > 0 %}<a href="#work">Work &amp; writing <span class="n">{{ work_count | prepend: "0" | slice: -2, 2 }}</span></a>{% endif %}
       <a href="#reading">Recommended reading <span class="n">{{ site.data.reading | size | prepend: "0" | slice: -2, 2 }}</span></a>
       <a href="#offclock">Off the clock <span class="n">♪</span></a>
@@ -64,6 +66,28 @@ layout: default
       </article>
       {%- endfor %}
     </section>
+
+    <!-- Tools & software: plugins and other published code -->
+    {%- if tools_count > 0 %}
+    <section id="tools">
+      <div class="sec-head"><h2>Tools &amp; software</h2><span class="hint">Open source · plugins &amp; utilities</span></div>
+      {%- for t in site.data.tools %}
+      {%- assign has_page = false %}{% if t.url and t.url != "" %}{% assign has_page = true %}{% endif %}
+      <article class="site">
+        <div class="yr">{{ t.year }}</div>
+        <div>
+          <h3><a href="{% if has_page %}{{ t.url }}{% else %}{{ t.repo }}{% endif %}">{{ t.title }}</a></h3>
+          <p>{{ t.description }}</p>
+          <div class="tags">{% if t.kind %}<span class="tag">{{ t.kind }}</span>{% endif %}{% for g in t.tags %}<span class="tag">{{ g }}</span>{% endfor %}<span class="badge">{{ t.lang | upcase }}</span>{% if t.status and t.status != "" %}<span class="badge status">{{ t.status }}</span>{% endif %}</div>
+        </div>
+        <div class="links">
+          {%- if has_page %}<a href="{{ t.url }}">{{ t.link_label | default: "Open" }} ↗</a>{% if t.repo %}<a class="muted" href="{{ t.repo }}">Repository</a>{% endif %}
+          {%- else %}<a href="{{ t.repo }}">Repository ↗</a>{% endif -%}
+        </div>
+      </article>
+      {%- endfor %}
+    </section>
+    {%- endif %}
 
     <!-- Work & writing: studies, reports, papers, articles -->
     {%- if work_count > 0 %}

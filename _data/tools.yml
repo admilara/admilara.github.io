@@ -1,0 +1,19 @@
+# Software I've built and published: plugins, scripts, tools. Newest first.
+# url:    main link – the tool's own page (e.g. QGIS plugin repository); falls back to repo if empty
+# repo:   source code
+# status: optional short note shown as a badge (e.g. while a plugin awaits approval); "" = hidden
+# lang:   language(s) of the user interface (en / hr / "en · hr")
+# link_label: optional text for the main link (default "Open")
+- title: INSPIRE ATOM Croatia – Cadastral Parcels
+  year: 2026
+  kind: QGIS plugin
+  link_label: Plugin page
+  # Once the plugin is approved, set url to its page:
+  #   https://plugins.qgis.org/plugins/inspire_atom_croatia/
+  # and empty the status below.
+  url: ""
+  repo: https://github.com/admilara/inspire_atom_croatia
+  status: "Awaiting approval"
+  lang: "en · hr"
+  description: Downloads cadastral parcels for any Croatian cadastral municipality from the State Geodetic Administration's INSPIRE ATOM feed and adds them to a QGIS project, with diacritic-tolerant search and Croatian alphabetical sorting.
+  tags: [INSPIRE, Python, Cadastre]
